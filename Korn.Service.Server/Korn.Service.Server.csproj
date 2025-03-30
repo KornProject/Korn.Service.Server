@@ -3,4 +3,11 @@
 	<TargetFrameworks>net8.0-windows;net472</TargetFrameworks>
 	<Platforms>x64</Platforms>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Korn.Pipes\Korn.Pipes\Korn.Pipes.csproj" />
+    <ProjectReference Include="..\..\Korn.Service.Shared\Korn.Service.Shared\Korn.Service.Shared.csproj" />
+  </ItemGroup>
 </Project>
