@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Korn.Service
 {
@@ -44,23 +45,29 @@ namespace Korn.Service
                 var handlers = registeredPackets[packetId];
                 if (handlers != null)
                     foreach (var handler in handlers)
-                        handler.DynamicInvoke(connection, packet);
+                        handler.Invoke(connection, packet);
             }
         }
 
-        List<Delegate>[] registeredPackets;
-        void InitializeRegisteredPackets() => registeredPackets = new List<Delegate>[Configuration.ClientPackets.Count];
+        List<RegisteredPacketDelegate>[] registeredPackets;
+        void InitializeRegisteredPackets() => registeredPackets = new List<RegisteredPacketDelegate>[Configuration.ClientPackets.Count];
 
         public void UnregisterAll() => InitializeRegisteredPackets();
 
         public Server Register<TClientPaclet>(Action<ClientConnection, TClientPaclet> handler) where TClientPaclet : ClientPacket
+            => Register<TClientPaclet>(RegisteredPacketDelegate.Create(handler));
+
+        public Server Register<TClientPaclet>(Action<TClientPaclet> handler) where TClientPaclet : ClientPacket
+            => Register<TClientPaclet>(RegisteredPacketDelegate.Create(handler));
+
+        public Server Register<TClientPaclet>(RegisteredPacketDelegate packetDelegate) where TClientPaclet : ClientPacket
         {
             var type = typeof(TClientPaclet);
             var id = Configuration.GetClientPacketID(type);
             if (registeredPackets[id] == null)
-                registeredPackets[id] = new List<Delegate>();
+                registeredPackets[id] = new List<RegisteredPacketDelegate>();
 
-            registeredPackets[id].Add(handler);
+            registeredPackets[id].Add(packetDelegate);
 
             return this;
         }
@@ -110,5 +117,28 @@ namespace Korn.Service
         }
 
         void HandleCallback(ClientConnection connection, ClientCallbackPacket callbackPacket) => connection.HandleCallback(callbackPacket);
-    }
+
+        public class RegisteredPacketDelegate
+        {
+            RegisteredPacketDelegate() { }
+
+            public Delegate ConnectionPacketHandler { get; private set; }
+            public Delegate PacketHandler { get; private set; }
+
+            public void Invoke(ClientConnection connection, ClientPacket packet)
+            {
+                if (ConnectionPacketHandler != null)
+                    ConnectionPacketHandler.DynamicInvoke(connection, packet);
+
+                if (PacketHandler != null)
+                    PacketHandler.DynamicInvoke(packet);
+            }
+
+            public static RegisteredPacketDelegate Create<TClientPacket>(Action<ClientConnection, TClientPacket> handler) where TClientPacket : ClientPacket
+                => new RegisteredPacketDelegate() { ConnectionPacketHandler = handler };
+
+            public static RegisteredPacketDelegate Create<TClientPacket>(Action<TClientPacket> handler) where TClientPacket : ClientPacket
+                => new RegisteredPacketDelegate() { PacketHandler = handler };
+        }
+    }    
 }

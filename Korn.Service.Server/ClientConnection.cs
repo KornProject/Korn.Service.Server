@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Korn.Pipes;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Korn.Service
 {
@@ -103,46 +104,46 @@ namespace Korn.Service
                 }
             }
         }
-    }
 
-    public class CallbackDelegate
-    {
-        CallbackDelegate() { }
-
-        public int CallbackID { get; private set; }
-        public Delegate ConnectionPacketHandler { get; private set; }
-        public Delegate PacketHandler { get; private set; }
-        public DateTime CreatedAt { get; private set; } = DateTime.Now;
-
-        public void Invoke(ClientConnection connection, ClientCallbackPacket packet)
+        public class CallbackDelegate
         {
-            if (ConnectionPacketHandler != null)
-                ConnectionPacketHandler.DynamicInvoke(connection, packet);
+            CallbackDelegate() { }
 
-            if (PacketHandler != null)
-                PacketHandler.DynamicInvoke(packet);
-        }
+            public int CallbackID { get; private set; }
+            public Delegate ConnectionPacketHandler { get; private set; }
+            public Delegate PacketHandler { get; private set; }
+            public DateTime CreatedAt { get; private set; } = DateTime.Now;
 
-        public static CallbackDelegate Create<TClientPacket>(int callbackId, Action<ClientConnection, TClientPacket> handler) where TClientPacket : ClientCallbackPacket
-        {
-            var callback = new CallbackDelegate()
+            public void Invoke(ClientConnection connection, ClientCallbackPacket packet)
             {
-                CallbackID = callbackId,
-                ConnectionPacketHandler = handler
-            };
+                if (ConnectionPacketHandler != null)
+                    ConnectionPacketHandler.DynamicInvoke(connection, packet);
 
-            return callback;
-        }
+                if (PacketHandler != null)
+                    PacketHandler.DynamicInvoke(packet);
+            }
 
-        public static CallbackDelegate Create<TClientPacket>(int callbackId, Action<TClientPacket> handler) where TClientPacket : ClientCallbackPacket
-        {
-            var callback = new CallbackDelegate()
+            public static CallbackDelegate Create<TClientPacket>(int callbackId, Action<ClientConnection, TClientPacket> handler) where TClientPacket : ClientCallbackPacket
             {
-                CallbackID = callbackId,
-                PacketHandler = handler
-            };
+                var callback = new CallbackDelegate()
+                {
+                    CallbackID = callbackId,
+                    ConnectionPacketHandler = handler
+                };
 
-            return callback;
+                return callback;
+            }
+
+            public static CallbackDelegate Create<TClientPacket>(int callbackId, Action<TClientPacket> handler) where TClientPacket : ClientCallbackPacket
+            {
+                var callback = new CallbackDelegate()
+                {
+                    CallbackID = callbackId,
+                    PacketHandler = handler
+                };
+
+                return callback;
+            }
         }
-    }
+    }    
 }

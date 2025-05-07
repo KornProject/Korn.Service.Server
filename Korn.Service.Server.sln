@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Korn", "Korn", "{FC544DCC-0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korn.Service.Shared", "..\Korn.Service.Shared\Korn.Service.Shared\Korn.Service.Shared.csproj", "{318AAD83-0598-4B05-B391-723ABE2B87E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korn.Pipes", "..\Korn.Pipes\Korn.Pipes\Korn.Pipes.csproj", "{8E03A407-0409-4DEF-AF39-FFE0FAB41D59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,11 +25,16 @@ Global
 		{318AAD83-0598-4B05-B391-723ABE2B87E1}.Debug|x64.Build.0 = Debug|x64
 		{318AAD83-0598-4B05-B391-723ABE2B87E1}.Release|x64.ActiveCfg = Release|x64
 		{318AAD83-0598-4B05-B391-723ABE2B87E1}.Release|x64.Build.0 = Release|x64
+		{8E03A407-0409-4DEF-AF39-FFE0FAB41D59}.Debug|x64.ActiveCfg = Debug|x64
+		{8E03A407-0409-4DEF-AF39-FFE0FAB41D59}.Debug|x64.Build.0 = Debug|x64
+		{8E03A407-0409-4DEF-AF39-FFE0FAB41D59}.Release|x64.ActiveCfg = Release|x64
+		{8E03A407-0409-4DEF-AF39-FFE0FAB41D59}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{318AAD83-0598-4B05-B391-723ABE2B87E1} = {FC544DCC-05FE-4B6C-845D-CF2B48E04B63}
+		{8E03A407-0409-4DEF-AF39-FFE0FAB41D59} = {FC544DCC-05FE-4B6C-845D-CF2B48E04B63}
 	EndGlobalSection
 EndGlobal
